@@ -1,0 +1,2 @@
+repository,lines,violations,duplicated_blocks,sqale_rating,comment_lines_density,cognitive_complexity,bugs,lines_to_cover,reliability_rating,duplicated_lines,comment_lines,ncloc,security_rating,complexity,functions,vulnerabilities,duplicated_files,code_smells
+brianbruno_followgram_frontend,22251,113,42,1.0,10.9,163,97,720,5.0,1157,1598,13110,5.0,355,263,1,12,15
