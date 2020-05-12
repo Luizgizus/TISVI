@@ -2,6 +2,10 @@ import os
 import requests
 import time
 import git
+import csv
+import pandas as pd
+
+FILE_NAME = None
 
 def download_repo(url):
 
@@ -18,35 +22,80 @@ def download_repo(url):
 def analyze(path, key):
 
     command = 'cd ' + path + '&& sonar-scanner.bat -D"sonar.projectKey=' + key + '" -D"sonar.sources=." ' \
-                 '-D"sonar.host.url=http://localhost:9000" -D"sonar.login=d06701b5ae30ca6a737aebd444e7ddf662ccec49"'
+                 '-D"sonar.host.url=http://infra.brian.place:32769" -D"sonar.login=0088090c339eeb581d77af487c7c264accb9ff03"'
     os.system(command)
 
 def createKey(name):
     data = {'name': name, 'project': name}
-    requests.post('http://localhost:9000/api/projects/create', data=data)
+    requests.post('http://infra.brian.place:32769/api/projects/create', data=data)
 
 def getMeasures(component):
 
-    metrics = 'ncloc,complexity,violations,vulnerabilities,bugs,code_smells,functions,sqale_rating,reliability_rating,security_rating,lines_to_cover,duplicated_lines,duplicated_blocks,duplicated_files,lines,comment_lines,comment_lines_density,cognitive_complexity'
-    x = requests.get('http://localhost:9000/api/measures/component?component='+component+'&metricKeys='+metrics)
+    metrics = 'ncloc,vulnerabilities,bugs,code_smells,reliability_rating,duplicated_lines,lines_to_cover,duplicated_blocks'
+    x = requests.get('http://infra.brian.place:32769/api/measures/component?component='+component+'&metricKeys='+metrics)
     return x.json()
 
-def exportCsv(data):
-    fileName = 'metrics-' + str(int(time.time())) + '.csv'
-    with open(fileName, 'a') as the_file:
+def ordenar(array, row):
+
+    arrayAux = list()
+
+    for item in row:
+        for measure in array:
+            if measure['metric'] == item:
+                arrayAux.append(measure)
+
+    return arrayAux
+
+def exportCsv(data, fileName):
+
+    row1 = ''
+
+    if fileName is None:
+        arquivoIniciado = False
+        fileNameCsv = 'metrics-' + str(int(time.time())) + '.csv'
+    else:
+        arquivoIniciado = True
+        fileNameCsv = fileName
+        row1 = pd.read_csv(fileNameCsv, nrows=1)
+
+    with open(fileNameCsv, 'a', newline='') as the_file:
+
         header = 'repository'
         line = data['component']['name']
-        for item in data['component']['measures']:
+        nloc = 0
+        lines_to_cover = 1
+
+        if arquivoIniciado:
+            measures = ordenar(data['component']['measures'], row1)
+        else:
+            measures = data['component']['measures']
+
+        for item in measures:
+            if item['metric'] == 'nloc':
+                nloc = item['value']
+            if item['metric'] == 'lines_to_cover':
+                lines_to_cover = item['value']
+            
             header += ',' + item['metric']
             line += ',' + item['value']
 
-        the_file.write(header+'\n')
-        the_file.write(line)
+        header  += ',tests'
+        tests = int(nloc)/int(lines_to_cover)
+        line += ',' + str(tests)
 
+        if not arquivoIniciado:
+            the_file.write(header+'\n')
+            
+        the_file.write(line+'\n')
 
-if __name__ == "__main__":
+    return fileNameCsv
+
+def run(url_repo):
+
+    global FILE_NAME
+
     print('Baixando repositório')
-    path = download_repo('https://github.com/brianbruno/followgram_frontend')
+    path = download_repo(url_repo)
 
     print('Criando Key')
     pathSplit = path.split('/')
@@ -63,4 +112,17 @@ if __name__ == "__main__":
     returned = getMeasures(sonarName)
 
     print('Salvar dados')
-    exportCsv(returned)
+    FILE_NAME = exportCsv(returned, FILE_NAME)
+
+if __name__ == "__main__":
+    print('Analisador de repositórios')
+    repos = [
+        'https://github.com/brianbruno/lab02-pucminas',
+        'https://github.com/brianbruno/lab2020.1',
+        'https://github.com/Luizgizus/Concessionaria', 
+        'https://github.com/brianbruno/followgram_frontend'
+    ]
+
+    for repo in repos:
+        run(repo)
+    
