@@ -14,6 +14,7 @@ class ApiGitHub {
     this.lasPage = process.env.MAX_PAGE;
 
     this.defaultRepoData = {
+      userName: null,
       closedIssuesPercentage: null,
       scaledClosedIssuesPercentage: null,
       qtdReactionsOnIssues: 0,
@@ -58,12 +59,20 @@ class ApiGitHub {
     }
   }
 
-  saveOnCsv(issuesData, followersData, repositoriesData, jobLanguage) {
+  saveOnCsv(
+    issuesData,
+    followersData,
+    repositoriesData,
+    jobLanguage,
+    userName
+  ) {
     let qtdIssuesClosed = 0;
     let qtdfollowerOfLanguage = 0;
     let qtdReposOfLanguage = 0;
     let totalWatchers = 0;
     let totalPop = 0;
+
+    this.defaultRepoData.userName = userName;
 
     for (let i = 0; i < issuesData.issues.length; i++) {
       const issue = issuesData.issues[i];
@@ -144,11 +153,17 @@ class ApiGitHub {
   }
 
   async getFeatures(userName) {
-    const issuesData = await this.getFeaturesOfIssues("timrwood");
-    const followersData = await this.getFeaturesOfFollowers("timrwood");
-    const repositoiesData = await this.getFeaturesOfRepositories("timrwood");
+    const issuesData = await this.getFeaturesOfIssues(userName);
+    const followersData = await this.getFeaturesOfFollowers(userName);
+    const repositoiesData = await this.getFeaturesOfRepositories(userName);
 
-    this.saveOnCsv(issuesData, followersData, repositoiesData, "JavaScript");
+    this.saveOnCsv(
+      issuesData,
+      followersData,
+      repositoiesData,
+      "JavaScript",
+      userName
+    );
   }
 
   async getFeaturesOfIssues(userName) {

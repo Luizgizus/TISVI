@@ -12,21 +12,35 @@ class ApiStackoverflow {
     this.lasPage = process.env.MAX_PAGE;
     this.dataToFile = {
       idUser: null,
-      reputaion: null,
+      percentageQuestionOfLangauge: null,
+      scaledercentageQuestionOfLangauge: null,
+      scoreQuestionAVG: null,
+      scaledScoreQuestionAVG: null,
+      percentageAnswerOfLangauge: null,
+      scaledepercentageAnswerOfLangauge: null,
+      scoreAnswerAVG: null,
+      scaledScoreAnswerAVG: null,
+      reputation: null,
       scaledReputation: null,
-      scoreAnswersAvg: 0,
-      scaledScoreAnswersAvg: null,
-      qtdAnswers: 0,
-      scaledQtdAnswers: null,
-      qtdAnswersByTag: {},
-      scaledQtdAnswersByTag: null,
-      scoreQuestionsAvg: 0,
-      scaledScoreQuestionsAvg: null,
-      qtdQuestions: 0,
-      scaledQtdQuestions: null,
-      qtdQuestionsByTag: {},
-      scaledQtdQuestionsByTag: null,
     };
+  }
+
+  getScaleOfPercentage(percentage) {
+    if (percentage === 0) {
+      return 0;
+    } else if (percentage < 0.2) {
+      return 1;
+    } else if (percentage >= 0.2 && percentage < 0.4) {
+      return 2;
+    } else if (percentage >= 0.4 && percentage < 0.6) {
+      return 3;
+    } else if (percentage >= 0.6 && percentage < 0.8) {
+      return 4;
+    } else if (percentage >= 0.8) {
+      return 5;
+    } else {
+      return 0;
+    }
   }
 
   async startFile() {
@@ -40,33 +54,64 @@ class ApiStackoverflow {
     );
   }
 
-  buildStackoverflowData(usersData, answersData, questionsData) {
+  buildStackoverflowData(usersData, answersData, questionsData, jobLanguage) {
+    console.log("questionsData");
+    console.log(questionsData);
+    console.log("\n");
+    console.log("answersData");
+    console.log(answersData);
+    console.log("\n");
+    console.log("usersData");
+    console.log(usersData);
+    console.log("\n");
+    console.log("jobLanguage");
+    console.log(jobLanguage);
+    console.log("\n");
     const dataToFile = _.clone(this.dataToFile);
 
-    dataToFile.idUser = usersData.idUser;
-    dataToFile.reputaion = usersData.reputaion;
-    dataToFile.scaledReputation = usersData.scaledReputation;
-    dataToFile.scoreAnswersAvg = answersData.scoreAvg
-      .toFixed(2)
-      .toString()
-      .replace(".", ",");
-    dataToFile.scaledScoreAnswersAvg = answersData.scaledScoreAvg;
-    dataToFile.qtdAnswers = answersData.qtdAnswers;
-    dataToFile.scaledQtdAnswers = answersData.scaledQtdAnswers;
-    dataToFile.scaledQtdAnswersByTag = answersData.scaledQtdAnswersByTag;
-    dataToFile.scoreQuestionsAvg = questionsData.scoreAvg
-      .toFixed(2)
-      .toString()
-      .replace(".", ",");
-    dataToFile.scaledScoreQuestionsAvg = questionsData.scaledScoreAvg;
-    dataToFile.qtdQuestions = questionsData.qtdQuestions;
-    dataToFile.scaledQtdQuestions = questionsData.scaledQtdQuestions;
-    dataToFile.scaledQtdQuestionsByTag = questionsData.scaledQtdQuestionsByTag;
+    if (
+      questionsData.qtdQuestionsByTag &&
+      questionsData.qtdQuestionsByTag[jobLanguage]
+    ) {
+      dataToFile.percentageQuestionOfLangauge = (
+        questionsData.qtdQuestionsByTag[jobLanguage] /
+        questionsData.qtdQuestions
+      ).toFixed(2);
+    } else {
+      dataToFile.percentageQuestionOfLangauge = 0;
+    }
 
-    dataToFile.qtdAnswersByTag = JSON.stringify(answersData.qtdAnswersByTag);
-    dataToFile.qtdQuestionsByTag = JSON.stringify(
-      questionsData.qtdQuestionsByTag
+    dataToFile.scaledercentageQuestionOfLangauge = this.getScaleOfPercentage(
+      dataToFile.percentageQuestionOfLangauge
     );
+
+    dataToFile.scoreQuestionAVG = questionsData.scoreAvg
+      .toFixed(2)
+      .toString()
+      .replace(".", ",");
+
+    if (
+      answersData.qtdAnswersByTag &&
+      answersData.qtdAnswersByTag[jobLanguage]
+    ) {
+      dataToFile.percentageAnswerOfLangauge = (
+        answersData.qtdAnswersByTag[jobLanguage] / answersData.qtdAnswers
+      ).toFixed(2);
+    } else {
+      dataToFile.percentageAnswerOfLangauge = 0;
+    }
+
+    dataToFile.scaledepercentageAnswerOfLangauge = this.getScaleOfPercentage(
+      dataToFile.percentageAnswerOfLangauge
+    );
+
+    dataToFile.scoreAnswerAVG = answersData.scoreAvg
+      .toFixed(2)
+      .toString()
+      .replace(".", ",");
+
+    dataToFile.idUser = usersData.idUser;
+    dataToFile.reputation = usersData.reputaion;
 
     fs.appendFileSync("stackoverflow.csv", this.util.getCsvString(dataToFile));
   }
@@ -193,7 +238,12 @@ class ApiStackoverflow {
       const answersData = await this.getAnswersMetrics(userId);
       const questionsData = await this.getQuestionsMetrics(userId);
 
-      this.buildStackoverflowData(usersData, answersData, questionsData);
+      this.buildStackoverflowData(
+        usersData,
+        answersData,
+        questionsData,
+        "javascript"
+      );
     } catch (err) {
       console.log(err);
     }

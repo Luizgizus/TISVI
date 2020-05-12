@@ -5,7 +5,7 @@ const apiGitHub = new ApiGitHub();
 
 async function start() {
   await apiGitHub.startFile();
-  await apiGitHub.getFeatures();
+  await apiGitHub.getFeatures("timrwood");
 }
 
 start();

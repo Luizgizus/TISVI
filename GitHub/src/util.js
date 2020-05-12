@@ -6,6 +6,7 @@ class Util {
 
   getCsvStringHeadder() {
     const headers = {
+      "login do usuario avaliado": null,
       "Percentual de issues fechadas": null,
       "Escala do percentual de issues fechadas": null,
       "Quantidade de reações nas issues": null,
