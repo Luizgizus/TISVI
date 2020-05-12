@@ -1,0 +1,24 @@
+query {
+  search(query: "timrwood", type: USER, first: 10) {
+    nodes {
+      ... on User {
+        followers(last: 100) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          totalCount
+          nodes {
+            repositories(last: 10) {
+              nodes {
+                primaryLanguage {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

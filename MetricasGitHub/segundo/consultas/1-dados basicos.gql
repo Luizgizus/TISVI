@@ -1,0 +1,19 @@
+query {
+  search(query: "timrwood", type: USER, first: 10) {
+    nodes {
+      ... on User {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        createdAt
+        email
+        id
+        location
+        login
+        name
+        projectsUrl
+      }
+    }
+  }
+}

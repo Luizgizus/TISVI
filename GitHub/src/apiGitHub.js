@@ -77,7 +77,10 @@ class ApiGitHub {
     for (let i = 0; i < issuesData.issues.length; i++) {
       const issue = issuesData.issues[i];
       if (issue.closed) {
-        if (issue.repository.primaryLanguage.name === jobLanguage) {
+        if (
+          issue.repository.primaryLanguage &&
+          issue.repository.primaryLanguage.name === jobLanguage
+        ) {
           qtdIssuesClosed++;
         }
       }
@@ -187,15 +190,15 @@ class ApiGitHub {
 
       if (response.statusCode === 200) {
         const dataRepos = response.body.data.search.nodes.pop();
-        hasNext = dataRepos.issues.pageInfo.hasNextPage;
+        if (dataRepos) {
+          if (dataRepos.issues.totalCount > 100) {
+            issuesData.totalCount = 100;
+          } else {
+            issuesData.totalCount = dataRepos.issues.totalCount;
+          }
 
-        if (dataRepos.issues.totalCount > 100) {
-          issuesData.totalCount = 100;
-        } else {
-          issuesData.totalCount = dataRepos.issues.totalCount;
+          issuesData.issues = dataRepos.issues.nodes;
         }
-
-        issuesData.issues = dataRepos.issues.nodes;
       } else {
         console.log(response);
         console.log(response.statusCode);
@@ -229,19 +232,21 @@ class ApiGitHub {
         const response = await this.request.post(url, body);
         if (response.statusCode === 200) {
           const dataRepos = response.body.data.search.nodes.pop();
-          hasNext = dataRepos.followers.pageInfo.hasNextPage;
-          stringQuery = this.model.getStringFollowers(
-            userName,
-            dataRepos.followers.pageInfo.endCursor
-          );
+          if (dataRepos) {
+            hasNext = dataRepos.followers.pageInfo.hasNextPage;
+            stringQuery = this.model.getStringFollowers(
+              userName,
+              dataRepos.followers.pageInfo.endCursor
+            );
 
-          if (dataRepos.followers.totalCount > 100) {
-            folowersData.totalCount = 100;
-          } else {
-            folowersData.totalCount = dataRepos.followers.totalCount;
+            if (dataRepos.followers.totalCount > 100) {
+              folowersData.totalCount = 100;
+            } else {
+              folowersData.totalCount = dataRepos.followers.totalCount;
+            }
+
+            folowersData.folowers = dataRepos.followers.nodes;
           }
-
-          folowersData.folowers = dataRepos.followers.nodes;
         } else {
           console.log(response);
           console.log(response.statusCode);
@@ -275,14 +280,15 @@ class ApiGitHub {
 
       if (response.statusCode === 200) {
         const dataRepos = response.body.data.search.nodes.pop();
+        if (dataRepos) {
+          if (dataRepos.repositories.totalCount > 100) {
+            respositoriesData.totalCount = 100;
+          } else {
+            respositoriesData.totalCount = dataRepos.repositories.totalCount;
+          }
 
-        if (dataRepos.repositories.totalCount > 100) {
-          respositoriesData.totalCount = 100;
-        } else {
-          respositoriesData.totalCount = dataRepos.repositories.totalCount;
+          respositoriesData.respositories = dataRepos.repositories.nodes;
         }
-
-        respositoriesData.respositories = dataRepos.repositories.nodes;
       } else {
         console.log(response);
         console.log(response.statusCode);

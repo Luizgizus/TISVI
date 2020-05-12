@@ -43,6 +43,60 @@ class ApiStackoverflow {
     }
   }
 
+  getScaleOfScoreQuestion(percentage) {
+    if (percentage === 0) {
+      return 0;
+    } else if (percentage < 0.5) {
+      return 1;
+    } else if (percentage >= 0.5 && percentage < 1.86) {
+      return 2;
+    } else if (percentage >= 1.86 && percentage < 3.42) {
+      return 3;
+    } else if (percentage >= 3.42 && percentage < 5.8) {
+      return 4;
+    } else if (percentage >= 5.8) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
+  getScaleOfScoreAnswers(percentage) {
+    if (percentage === 0) {
+      return 0;
+    } else if (percentage < 0.73) {
+      return 1;
+    } else if (percentage >= 0.73 && percentage < 1.55) {
+      return 2;
+    } else if (percentage >= 1.55 && percentage < 2.66) {
+      return 3;
+    } else if (percentage >= 2.66 && percentage < 5.67) {
+      return 4;
+    } else if (percentage >= 5.67) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
+  getScaleOfReputation(percentage) {
+    if (percentage === 0) {
+      return 0;
+    } else if (percentage < 293) {
+      return 1;
+    } else if (percentage >= 293 && percentage < 1135) {
+      return 2;
+    } else if (percentage >= 1135 && percentage < 3340) {
+      return 3;
+    } else if (percentage >= 3340 && percentage < 10612) {
+      return 4;
+    } else if (percentage >= 10612) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
   async startFile() {
     const hasRepoFile = await fs.existsSync("stackoverflow.csv");
     if (hasRepoFile) {
@@ -78,6 +132,10 @@ class ApiStackoverflow {
       .toString()
       .replace(".", ",");
 
+    dataToFile.scaledScoreQuestionAVG = this.getScaleOfScoreQuestion(
+      questionsData.scoreAvg
+    );
+
     if (
       answersData.qtdAnswersByTag &&
       answersData.qtdAnswersByTag[jobLanguage]
@@ -98,8 +156,17 @@ class ApiStackoverflow {
       .toString()
       .replace(".", ",");
 
+    dataToFile.scaledScoreAnswerAVG = this.getScaleOfScoreAnswers(
+      answersData.scoreAvg
+    );
+
     dataToFile.idUser = usersData.idUser;
+
     dataToFile.reputation = usersData.reputaion;
+
+    dataToFile.scaledReputation = this.getScaleOfReputation(
+      dataToFile.reputation
+    );
 
     fs.appendFileSync("stackoverflow.csv", this.util.getCsvString(dataToFile));
   }
@@ -111,7 +178,7 @@ class ApiStackoverflow {
       scaledReputation: null,
     };
 
-    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&pagesize=100&site=stackoverflow`;
+    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
     const response = await this.request.get(url);
 
     const data = response.body.items.pop();
@@ -138,7 +205,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&pagesize=100&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -153,7 +220,7 @@ class ApiStackoverflow {
             (data.items[i].score + defaultAnswerData.scoreAvg) / 2;
         }
 
-        const urlQuestion = `https://api.stackexchange.com/2.2/questions/${data.items[i].question_id}?site=stackoverflow`;
+        const urlQuestion = `https://api.stackexchange.com/2.2/questions/${data.items[i].question_id}?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
         const responseQuestion = await this.request.get(urlQuestion);
 
         const question = responseQuestion.body.items.pop();
@@ -189,7 +256,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -222,8 +289,11 @@ class ApiStackoverflow {
 
   async getFeatures(userId) {
     try {
+      console.log("Getting usersData of:" + userId);
       const usersData = await this.getUsermetrics(userId);
+      console.log("Getting answersData of:" + userId);
       const answersData = await this.getAnswersMetrics(userId);
+      console.log("Getting questionsData of:" + userId);
       const questionsData = await this.getQuestionsMetrics(userId);
 
       this.buildStackoverflowData(

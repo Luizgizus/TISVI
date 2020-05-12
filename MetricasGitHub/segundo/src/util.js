@@ -4,12 +4,20 @@ const moment = require("moment");
 class Util {
   constructor() {}
 
-  getCsvStringHeadder() {
+  getCsvStringHeadderRepo() {
     const headers = {
       "Id do usuario": null,
-      "Score médio das perguntas": null,
-      "Score médio das respostas": null,
-      "Reputação ": null,
+      "Média de popularidade do repositório": null,
+      "Média de watchers": null,
+    };
+    const keys = _.keysIn(headers);
+    return keys.join(";") + "\n";
+  }
+
+  getCsvStringHeadderIssue() {
+    const headers = {
+      "Id do usuario": null,
+      "Quantidade de reações nas issues": null,
     };
     const keys = _.keysIn(headers);
     return keys.join(";") + "\n";

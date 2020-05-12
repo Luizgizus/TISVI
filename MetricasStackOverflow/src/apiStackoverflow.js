@@ -11,6 +11,7 @@ class ApiStackoverflow {
     this.util = new Util();
     this.lasPage = process.env.MAX_PAGE;
     this.dataToFile = {
+      idUser: null,
       scoreQuestionAVG: null,
       scoreAnswerAVG: null,
       reputation: null,
@@ -28,7 +29,13 @@ class ApiStackoverflow {
     );
   }
 
-  buildStackoverflowData(usersData, answersData, questionsData, jobLanguage) {
+  buildStackoverflowData(
+    usersData,
+    answersData,
+    questionsData,
+    jobLanguage,
+    userId
+  ) {
     const dataToFile = _.clone(this.dataToFile);
 
     dataToFile.scoreQuestionAVG = questionsData.scoreAvg
@@ -43,6 +50,8 @@ class ApiStackoverflow {
 
     dataToFile.reputation = usersData.reputaion;
 
+    dataToFile.idUser = userId;
+
     fs.appendFileSync("stackoverflow.csv", this.util.getCsvString(dataToFile));
   }
 
@@ -51,12 +60,16 @@ class ApiStackoverflow {
       reputaion: null,
     };
 
-    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&pagesize=100&site=stackoverflow`;
+    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
     const response = await this.request.get(url);
 
     const data = response.body.items.pop();
 
-    defaultUserData.reputaion = data.reputation;
+    console.log(response.body);
+
+    if (data && !_.isEmpty(data)) {
+      defaultUserData.reputaion = data.reputation;
+    }
 
     return defaultUserData;
   }
@@ -70,7 +83,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&pagesize=100&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -98,7 +111,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -120,15 +133,21 @@ class ApiStackoverflow {
   async getFeatures(userId) {
     try {
       const usersData = await this.getUsermetrics(userId);
-      const answersData = await this.getAnswersMetrics(userId);
-      const questionsData = await this.getQuestionsMetrics(userId);
+      if (usersData && usersData.reputaion !== null) {
+        const answersData = await this.getAnswersMetrics(userId);
+        const questionsData = await this.getQuestionsMetrics(userId);
 
-      this.buildStackoverflowData(
-        usersData,
-        answersData,
-        questionsData,
-        "javascript"
-      );
+        this.buildStackoverflowData(
+          usersData,
+          answersData,
+          questionsData,
+          "javascript",
+          userId
+        );
+        return true;
+      } else {
+        return false;
+      }
     } catch (err) {
       console.log(err);
     }
