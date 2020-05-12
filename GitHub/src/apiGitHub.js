@@ -71,6 +71,7 @@ class ApiGitHub {
     let qtdReposOfLanguage = 0;
     let totalWatchers = 0;
     let totalPop = 0;
+    const urlRepos = [];
 
     this.defaultRepoData.userName = userName;
 
@@ -105,6 +106,7 @@ class ApiGitHub {
 
     for (let i = 0; i < repositoriesData.respositories.length; i++) {
       const repo = repositoriesData.respositories[i];
+      urlRepos.push(repo.url + ".git");
       for (let j = 0; j < repo.languages.nodes.length; j++) {
         const language = repo.languages.nodes[j];
         if (language && language.name === jobLanguage) {
@@ -148,6 +150,8 @@ class ApiGitHub {
     this.defaultRepoData.repoPopAVG = (
       totalPop / repositoriesData.totalCount
     ).toFixed(2);
+
+    console.log(urlRepos);
 
     fs.appendFileSync(
       "github.csv",

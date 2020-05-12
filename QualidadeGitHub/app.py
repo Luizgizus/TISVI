@@ -117,10 +117,16 @@ def run(url_repo):
 if __name__ == "__main__":
     print('Analisador de repositórios')
     repos = [
-        'https://github.com/brianbruno/lab02-pucminas',
-        'https://github.com/brianbruno/lab2020.1',
-        'https://github.com/Luizgizus/Concessionaria', 
-        'https://github.com/brianbruno/followgram_frontend'
+        'https://github.com/jwd-ali/TidalTestProject.git',
+        'https://github.com/jwd-ali/MusicSearch-SwiftUI.git',
+        'https://github.com/ankitkanojia/dailyshop_react_redux.git',
+        'https://github.com/ankitkanojia/iBitcoin-Crypto.git',
+        'https://github.com/polm/boundless.git',
+        'https://github.com/polm/palladian-facades.git',
+        'https://github.com/denistsoi/shrug-emoji.git',
+        'https://github.com/denistsoi/go-jokes.git',
+        'https://github.com/cagri90/DemoServer.git',
+        'https://github.com/cagri90/Interview.git',
     ]
 
     for repo in repos:
