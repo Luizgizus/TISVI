@@ -21,6 +21,8 @@ def download_repo(url):
 
 def analyze(path, key):
 
+    path = path.replace('.git', '')
+
     command = 'cd ' + path + '&& sonar-scanner.bat -D"sonar.projectKey=' + key + '" -D"sonar.sources=." ' \
                  '-D"sonar.host.url=http://infra.brian.place:32769" -D"sonar.login=0088090c339eeb581d77af487c7c264accb9ff03"'
     os.system(command)

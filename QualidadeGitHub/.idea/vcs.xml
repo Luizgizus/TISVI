@@ -2,6 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/ankitkanojia/dailyshop_react_redux" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/ankitkanojia/iBitcoin-Crypto" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/repositories/brianbruno/followgram_frontend" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/jwd-ali/MusicSearch-SwiftUI" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/repositories/jwd-ali/TidalTestProject" vcs="Git" />
   </component>
 </project>
