@@ -10,19 +10,28 @@ class ApiStackoverflow {
     this.request = new Request();
     this.util = new Util();
     this.lasPage = process.env.MAX_PAGE;
-    this.dataToFile = {
+    this.dataToFile = {};
+  }
+
+  getDefaultKeys(languagesJob) {
+    let keys = {
       idUser: null,
-      percentageQuestionOfLangauge: null,
-      scaledercentageQuestionOfLangauge: null,
       scoreQuestionAVG: null,
       scaledScoreQuestionAVG: null,
-      percentageAnswerOfLangauge: null,
-      scaledepercentageAnswerOfLangauge: null,
       scoreAnswerAVG: null,
       scaledScoreAnswerAVG: null,
       reputation: null,
       scaledReputation: null,
-    };
+    }
+
+    for (let i = 0; i < languagesJob.length; i++) {
+      keys["percentageQuestionOn" + languagesJob[i]] = null
+      keys["scaledercentageQuestionOn" + languagesJob[i]] = null
+      keys["percentageAnswerOn" + languagesJob[i]] = null
+      keys["scaledepercentageAnswerOn" + languagesJob[i]] = null
+    }
+
+    return keys
   }
 
   getScaleOfPercentage(percentage) {
@@ -97,35 +106,55 @@ class ApiStackoverflow {
     }
   }
 
-  async startFile() {
+  async startFile(languagesJob) {
     const hasRepoFile = await fs.existsSync("stackoverflow.csv");
     if (hasRepoFile) {
       await fs.truncateSync("stackoverflow.csv");
     }
     await fs.appendFileSync(
       "stackoverflow.csv",
-      this.util.getCsvStringHeadder(this.defaultRepoData)
+      this.util.getCsvStringHeadder(languagesJob)
     );
   }
 
   buildStackoverflowData(usersData, answersData, questionsData, jobLanguage) {
-    const dataToFile = _.clone(this.dataToFile);
+    const dataToFile = this.getDefaultKeys(jobLanguage)
 
-    if (
-      questionsData.qtdQuestionsByTag &&
-      questionsData.qtdQuestionsByTag[jobLanguage]
-    ) {
-      dataToFile.percentageQuestionOfLangauge = (
-        questionsData.qtdQuestionsByTag[jobLanguage] /
-        questionsData.qtdQuestions
-      ).toFixed(2);
-    } else {
-      dataToFile.percentageQuestionOfLangauge = 0;
+    for (let i = 0; i < jobLanguage.length; i++) {
+
+      if (
+        questionsData.qtdQuestionsByTag &&
+        questionsData.qtdQuestionsByTag[jobLanguage[i]]
+      ) {
+        dataToFile['percentageQuestionOn' + jobLanguage[i]] = (
+          questionsData.qtdQuestionsByTag[jobLanguage[i]] /
+          questionsData.qtdQuestions
+        ).toFixed(2);
+      } else {
+        dataToFile['percentageQuestionOn' + jobLanguage[i]] = 0;
+      }
+
+      dataToFile['scaledercentageQuestionOn' + jobLanguage[i]] = this.getScaleOfPercentage(
+        dataToFile['percentageQuestionOn' + jobLanguage[i]]
+      );
+
+
+      if (
+        answersData.qtdAnswersByTag &&
+        answersData.qtdAnswersByTag[jobLanguage[i]]
+      ) {
+        dataToFile['percentageAnswerOn' + jobLanguage[i]] = (
+          answersData.qtdAnswersByTag[jobLanguage[i]] / answersData.qtdAnswers
+        ).toFixed(2);
+      } else {
+        dataToFile['percentageAnswerOn' + jobLanguage[i]] = 0;
+      }
+
+      dataToFile['scaledepercentageAnswerOn' + jobLanguage[i]] = this.getScaleOfPercentage(
+        dataToFile['percentageAnswerOn' + jobLanguage[i]]
+      );
+
     }
-
-    dataToFile.scaledercentageQuestionOfLangauge = this.getScaleOfPercentage(
-      dataToFile.percentageQuestionOfLangauge
-    );
 
     dataToFile.scoreQuestionAVG = questionsData.scoreAvg
       .toFixed(2)
@@ -134,21 +163,6 @@ class ApiStackoverflow {
 
     dataToFile.scaledScoreQuestionAVG = this.getScaleOfScoreQuestion(
       questionsData.scoreAvg
-    );
-
-    if (
-      answersData.qtdAnswersByTag &&
-      answersData.qtdAnswersByTag[jobLanguage]
-    ) {
-      dataToFile.percentageAnswerOfLangauge = (
-        answersData.qtdAnswersByTag[jobLanguage] / answersData.qtdAnswers
-      ).toFixed(2);
-    } else {
-      dataToFile.percentageAnswerOfLangauge = 0;
-    }
-
-    dataToFile.scaledepercentageAnswerOfLangauge = this.getScaleOfPercentage(
-      dataToFile.percentageAnswerOfLangauge
     );
 
     dataToFile.scoreAnswerAVG = answersData.scoreAvg
@@ -287,7 +301,7 @@ class ApiStackoverflow {
     return defaultQuestionsData;
   }
 
-  async getFeatures(userId) {
+  async getFeatures(userId, languagesJob) {
     try {
       console.log("Getting usersData of:" + userId);
       const usersData = await this.getUsermetrics(userId);
@@ -300,7 +314,7 @@ class ApiStackoverflow {
         usersData,
         answersData,
         questionsData,
-        "javascript"
+        languagesJob
       );
     } catch (err) {
       console.log(err);
