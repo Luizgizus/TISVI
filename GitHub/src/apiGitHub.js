@@ -15,14 +15,8 @@ class ApiGitHub {
 
     this.defaultRepoData = {
       userName: null,
-      closedIssuesPercentage: null,
-      scaledClosedIssuesPercentage: null,
       qtdReactionsOnIssues: 0,
       scaledQtdReactionsOnIssues: null,
-      followersPercentage: null,
-      scaledFollowersPercentage: null,
-      repositoryPercentageOnSameLanguage: null,
-      scaledRepositoryPercentageOnSameLanguage: null,
       repoPopAVG: null,
       scaledRepoPopAVG: null,
       watchersAVG: null,
@@ -30,14 +24,37 @@ class ApiGitHub {
     };
   }
 
-  async startFile() {
+  getDefaultKeys(languagesJob) {
+    let keys = {
+      userName: null,
+      qtdReactionsOnIssues: 0,
+      scaledQtdReactionsOnIssues: null,
+      repoPopAVG: null,
+      scaledRepoPopAVG: null,
+      watchersAVG: null,
+      scaledWatchersAVG: null,
+    }
+
+    for (let i = 0; i < languagesJob.length; i++) {
+      keys["closedIssuesPercentageOn" + languagesJob[i]] = null
+      keys["scaledClosedIssuesPercentageOn" + languagesJob[i]] = null
+      keys["followersPercentageOn" + languagesJob[i]] = null
+      keys["scaledFollowersPercentageOn" + languagesJob[i]] = null
+      keys["repositoryPercentageOn" + languagesJob[i]] = null
+      keys["scaledRepositoryPercentageOn" + languagesJob[i]] = null
+    }
+
+    return keys
+  }
+
+  async startFile(languagesJob) {
     const hasRepoFile = await fs.existsSync("github.csv");
     if (hasRepoFile) {
       await fs.truncateSync("github.csv");
     }
     await fs.appendFileSync(
       "github.csv",
-      this.util.getCsvStringHeadder(this.defaultRepoData)
+      this.util.getCsvStringHeadder(languagesJob)
     );
   }
 
@@ -63,15 +80,17 @@ class ApiGitHub {
     issuesData,
     followersData,
     repositoriesData,
-    jobLanguage,
+    jobsLanguages,
     userName
   ) {
-    let qtdIssuesClosed = 0;
-    let qtdfollowerOfLanguage = 0;
-    let qtdReposOfLanguage = 0;
+    let qtdIssuesClosed = {};
+    let qtdfollowerOfLanguage = {};
+    let qtdReposOfLanguage = {};
     let totalWatchers = 0;
     let totalPop = 0;
     const urlRepos = [];
+
+    this.defaultRepoData = this.getDefaultKeys(jobsLanguages)
 
     this.defaultRepoData.userName = userName;
 
@@ -80,9 +99,13 @@ class ApiGitHub {
       if (issue.closed) {
         if (
           issue.repository.primaryLanguage &&
-          issue.repository.primaryLanguage.name === jobLanguage
+          jobsLanguages.indexOf(issue.repository.primaryLanguage.name) !== -1
         ) {
-          qtdIssuesClosed++;
+          if (_.isEmpty(qtdIssuesClosed) || !qtdIssuesClosed[issue.repository.primaryLanguage.name]) {
+            qtdIssuesClosed[issue.repository.primaryLanguage.name] = 1;
+          } else {
+            qtdIssuesClosed[issue.repository.primaryLanguage.name]++;
+          }
         }
       }
 
@@ -97,8 +120,12 @@ class ApiGitHub {
       const follower = followersData.folowers[i];
       for (let j = 0; j < follower.repositories.nodes.length; j++) {
         const repo = follower.repositories.nodes[j];
-        if (repo.primaryLanguage && repo.primaryLanguage.name === jobLanguage) {
-          qtdfollowerOfLanguage++;
+        if (repo.primaryLanguage && jobsLanguages.indexOf(repo.primaryLanguage.name) !== -1) {
+          if (_.isEmpty(qtdfollowerOfLanguage) || !qtdfollowerOfLanguage[repo.primaryLanguage.name]) {
+            qtdfollowerOfLanguage[repo.primaryLanguage.name] = 1;
+          } else {
+            qtdfollowerOfLanguage[repo.primaryLanguage.name]++;
+          }
           break;
         }
       }
@@ -109,8 +136,12 @@ class ApiGitHub {
       urlRepos.push(repo.url + ".git");
       for (let j = 0; j < repo.languages.nodes.length; j++) {
         const language = repo.languages.nodes[j];
-        if (language && language.name === jobLanguage) {
-          qtdReposOfLanguage++;
+        if (language && jobsLanguages.indexOf(language.name) !== -1) {
+          if (_.isEmpty(qtdReposOfLanguage) || !qtdReposOfLanguage[language.name]) {
+            qtdReposOfLanguage[language.name] = 1;
+          } else {
+            qtdReposOfLanguage[language.name]++;
+          }
           break;
         }
       }
@@ -119,29 +150,52 @@ class ApiGitHub {
       totalWatchers += repo.watchers.totalCount;
     }
 
-    this.defaultRepoData.closedIssuesPercentage = (
-      qtdIssuesClosed / issuesData.totalCount
-    ).toFixed(2);
+    for (let i = 0; i < jobsLanguages.length; i++) {
 
-    this.defaultRepoData.scaledClosedIssuesPercentage = this.getScaleOfPercentage(
-      this.defaultRepoData.closedIssuesPercentage
-    );
+      if (qtdIssuesClosed[jobsLanguages[i]]) {
+        this.defaultRepoData['closedIssuesPercentageOn' + jobsLanguages[i]] = (
+          qtdIssuesClosed[jobsLanguages[i]] / issuesData.totalCount
+        ).toFixed(2);
+      } else {
+        this.defaultRepoData['closedIssuesPercentageOn' + jobsLanguages[i]] = 0
+      }
 
-    this.defaultRepoData.followersPercentage = (
-      qtdfollowerOfLanguage / followersData.totalCount
-    ).toFixed(2);
+      this.defaultRepoData['scaledClosedIssuesPercentageOn' + jobsLanguages[i]] = this.getScaleOfPercentage(
+        this.defaultRepoData['closedIssuesPercentageOn' + jobsLanguages[i]]
+      );
 
-    this.defaultRepoData.scaledFollowersPercentage = this.getScaleOfPercentage(
-      this.defaultRepoData.followersPercentage
-    );
 
-    this.defaultRepoData.repositoryPercentageOnSameLanguage = (
-      qtdReposOfLanguage / repositoriesData.totalCount
-    ).toFixed(2);
 
-    this.defaultRepoData.scaledRepositoryPercentageOnSameLanguage = this.getScaleOfPercentage(
-      this.defaultRepoData.repositoryPercentageOnSameLanguage
-    );
+
+
+      if (qtdfollowerOfLanguage[jobsLanguages[i]]) {
+        this.defaultRepoData['followersPercentageOn' + jobsLanguages[i]] = (
+          qtdfollowerOfLanguage[jobsLanguages[i]] / followersData.totalCount
+        ).toFixed(2);
+      } else {
+        this.defaultRepoData['followersPercentageOn' + jobsLanguages[i]] = 0
+      }
+
+      this.defaultRepoData['scaledFollowersPercentageOn' + jobsLanguages[i]] = this.getScaleOfPercentage(
+        this.defaultRepoData['followersPercentageOn' + jobsLanguages[i]]
+      );
+
+
+
+
+
+      if (qtdReposOfLanguage[jobsLanguages[i]]) {
+        this.defaultRepoData['repositoryPercentageOn' + jobsLanguages[i]] = (
+          qtdReposOfLanguage[jobsLanguages[i]] / repositoriesData.totalCount
+        ).toFixed(2);
+      } else {
+        this.defaultRepoData['repositoryPercentageOn' + jobsLanguages[i]] = 0
+      }
+
+      this.defaultRepoData['scaledRepositoryPercentageOn' + jobsLanguages[i]] = this.getScaleOfPercentage(
+        this.defaultRepoData['repositoryPercentageOn' + jobsLanguages[i]]
+      );
+    }
 
     this.defaultRepoData.watchersAVG = (
       totalWatchers / repositoriesData.totalCount
@@ -151,7 +205,9 @@ class ApiGitHub {
       totalPop / repositoriesData.totalCount
     ).toFixed(2);
 
-    console.log(urlRepos);
+    // console.log(urlRepos);
+
+    console.log(this.defaultRepoData)
 
     fs.appendFileSync(
       "github.csv",
@@ -159,7 +215,7 @@ class ApiGitHub {
     );
   }
 
-  async getFeatures(userName) {
+  async getFeatures(userName, languagesNames) {
     const issuesData = await this.getFeaturesOfIssues(userName);
     const followersData = await this.getFeaturesOfFollowers(userName);
     const repositoiesData = await this.getFeaturesOfRepositories(userName);
@@ -168,7 +224,7 @@ class ApiGitHub {
       issuesData,
       followersData,
       repositoiesData,
-      "JavaScript",
+      languagesNames,
       userName
     );
   }

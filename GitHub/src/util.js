@@ -2,24 +2,27 @@ const _ = require("lodash");
 const moment = require("moment");
 
 class Util {
-  constructor() {}
+  constructor() { }
 
-  getCsvStringHeadder() {
+  getCsvStringHeadder(languagesJob) {
     const headers = {
       "login do usuario avaliado": null,
-      "Percentual de issues fechadas": null,
-      "Escala do percentual de issues fechadas": null,
       "Quantidade de reações nas issues": null,
       "Escala da quantidade de reações nas issues": null,
-      "Percentual de segudores": null,
-      "Escala do percentual de segudores": null,
-      "Percentual de repositórios na mesma linguagem da vaga": null,
-      "Escala do percentual de repositórios na mesma linguagem da vaga": null,
       "Popularidade do repositório": null,
       "Escala da popularidade do repositório": null,
       "Média de watchers": null,
       "Escala da média de watchers": null,
     };
+
+    for (let i = 0; i < languagesJob.length; i++) {
+      headers["Percentual de issues fechadas da linguagem " + languagesJob[i]] = null
+      headers["Escala do percentual de issues fechadas da linguagem " + languagesJob[i]] = null
+      headers["Percentual de segudores da linguagem " + languagesJob[i]] = null
+      headers["Escala do percentual de segudores da linguagem " + languagesJob[i]] = null
+      headers["Percentual de repositórios na linguagem " + languagesJob[i]] = null
+      headers["Escala do percentual de repositórios na linguagem " + languagesJob[i]] = null
+    }
     const keys = _.keysIn(headers);
     return keys.join(";") + "\n";
   }

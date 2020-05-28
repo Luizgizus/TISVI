@@ -1,6 +1,6 @@
-login do usuario avaliado;Percentual de issues fechadas;Escala do percentual de issues fechadas;Quantidade de reaÃ§Ãµes nas issues;Escala da quantidade de reaÃ§Ãµes nas issues;Percentual de segudores;Escala do percentual de segudores;Percentual de repositÃ³rios na mesma linguagem da vaga;Escala do percentual de repositÃ³rios na mesma linguagem da vaga;Popularidade do repositÃ³rio;Escala da popularidade do repositÃ³rio;MÃ©dia de watchers;Escala da mÃ©dia de watchers
-jwd-ali;0.00;1;1;;0.00;1;0.00;1;1.78;;0.56;
-ankitkanojia;0.37;2;1;;0.35;2;0.77;4;2.49;;1.55;
-polm;0.13;1;35;;0.58;3;0.33;2;4.75;;1.10;
-denistsoi;0.23;2;43;;0.65;4;0.69;4;0.01;;0.81;
-cagri90;0;0;43;;0;0;0.25;2;0.00;;1.00;
+login do usuario avaliado;Quantidade de reações nas issues;Escala da quantidade de reações nas issues;Popularidade do repositório;Escala da popularidade do repositório;Média de watchers;Escala da média de watchers;Percentual de issues fechadas da linguagem JavaScript;Escala do percentual de issues fechadas da linguagem JavaScript;Percentual de segudores da linguagem JavaScript;Escala do percentual de segudores da linguagem JavaScript;Percentual de repositórios na linguagem JavaScript;Escala do percentual de repositórios na linguagem JavaScript;Percentual de issues fechadas da linguagem C;Escala do percentual de issues fechadas da linguagem C;Percentual de segudores da linguagem C;Escala do percentual de segudores da linguagem C;Percentual de repositórios na linguagem C;Escala do percentual de repositórios na linguagem C;Percentual de issues fechadas da linguagem C++;Escala do percentual de issues fechadas da linguagem C++;Percentual de segudores da linguagem C++;Escala do percentual de segudores da linguagem C++;Percentual de repositórios na linguagem C++;Escala do percentual de repositórios na linguagem C++
+jwd-ali;1;;1.52;;0.48;;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+ankitkanojia;0;;2.46;;1.52;;0.37;2;0.36;2;0.77;4;0;0;0;0;0;0;0;0;0;0;0;0
+polm;34;;4.98;;1.10;;0.13;1;0.43;3;0.30;2;0.01;1;0.17;1;0.07;1;0.09;1;0.18;1;0.07;1
+denistsoi;8;;0.01;;0.81;;0.25;2;0.62;4;0.66;4;0;0;0.07;1;0.01;1;0;0;0.05;1;0;0
+cagri90;0;;0.00;;1.00;;0;0;0;0;0.25;2;0;0;0;0;0;0;0;0;0;0;0;0
