@@ -4,8 +4,21 @@ import time
 import git
 import csv
 import pandas as pd
+from contextlib import contextmanager
+import sys, os
 
-FILE_NAME = None
+# FILE_NAME = None
+FILE_NAME = 'metrics.csv'
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:  
+            yield
+        finally:
+            sys.stdout = old_stdout
 
 def download_repo(url):
 
@@ -373,6 +386,15 @@ if __name__ == "__main__":
         'https://github.com/cagri90/apiinterview.git'
     ]
 
+    i = 0
+
     for repo in repos:
-        run(repo)
+            
+        try:
+            i += 1
+            print(str(i) + '/' + str(len(repos)))
+            with suppress_stdout():
+                run(repo)
+        except:
+            print("ERRO! Repositório: " + repo)
     
