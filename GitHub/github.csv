@@ -1,11 +1,13 @@
 login do usuario avaliado;Quantidade de reações nas issues;Escala da quantidade de reações nas issues;Popularidade do repositório;Escala da popularidade do repositório;Percentual de issues fechadas da linguagem JavaScript;Escala do percentual de issues fechadas da linguagem JavaScript;Percentual de segudores da linguagem JavaScript;Escala do percentual de segudores da linguagem JavaScript;Percentual de repositórios na linguagem JavaScript;Escala do percentual de repositórios na linguagem JavaScript;Percentual de issues fechadas da linguagem C;Escala do percentual de issues fechadas da linguagem C;Percentual de segudores da linguagem C;Escala do percentual de segudores da linguagem C;Percentual de repositórios na linguagem C;Escala do percentual de repositórios na linguagem C;Percentual de issues fechadas da linguagem php;Escala do percentual de issues fechadas da linguagem php;Percentual de segudores da linguagem php;Escala do percentual de segudores da linguagem php;Percentual de repositórios na linguagem php;Escala do percentual de repositórios na linguagem php;Percentual de issues fechadas da linguagem C#;Escala do percentual de issues fechadas da linguagem C#;Percentual de segudores da linguagem C#;Escala do percentual de segudores da linguagem C#;Percentual de repositórios na linguagem C#;Escala do percentual de repositórios na linguagem C#;Percentual de issues fechadas da linguagem C++;Escala do percentual de issues fechadas da linguagem C++;Percentual de segudores da linguagem C++;Escala do percentual de segudores da linguagem C++;Percentual de repositórios na linguagem C++;Escala do percentual de repositórios na linguagem C++
-wallacemaxters;1;2;1.00;2;0;0;0.51;3;0.57;3;0;0;0.10;1;0;0;0;0;0;0;0;0;0;0;0.06;1;0;0;0;0;0.06;1;0;0
-isaiasdd;7;3;3.00;4;0.33;2;0.43;3;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.43;3;0;0;0;0;0;0;0;0
-pablotdv;2;2;0.80;2;0.08;1;0.42;3;0.06;1;0;0;0;0;0;0;0;0;0;0;0;0;0.92;5;0.42;3;0.82;5;0;0;0;0;0;0
-LeonardoBonetti;0;1;0.08;2;0;0;0.60;4;0.40;3;0;0;0;0;0.04;1;0;0;0;0;0;0;0;0;0;0;0.26;2;0;0;0;0;0;0
-artptrapp;0;1;0.50;2;0;0;1.00;5;1.00;5;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
-jlHertel;3;2;12.29;5;0;0;0.29;2;0;0;0;0;0.21;2;0;0;0;0;0;0;0;0;0;0;0.07;1;0;0;0.53;3;0.14;1;0.14;1
-brumazzi;0;1;0.34;2;0;0;0.44;3;0.30;2;0;0;0.11;1;0.30;2;0;0;0;0;0;0;0;0;0;0;0.02;1;0;0;0.11;1;0.05;1
-cegesser;0;1;0.83;2;0;0;1.00;5;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.83;5
-darcamo;3;2;0.51;2;0;0;0.11;1;0.21;2;0;0;0;0;0.04;1;0;0;0;0;0;0;0;0;0;0;0;0;0.09;1;0.56;3;0.49;3
-durvalcarvalho;0;1;0.43;2;0;0;0.68;4;0.13;1;0;0;0.14;1;0.04;1;0;0;0;0;0;0;0;0;0;0;0.02;1;0.14;1;0.14;1;0.13;1
+ExplodingCabbage;80;4;14.94;5;0.20;2;0.50;3;0.35;2;0.02;1;0.17;1;0.12;1;0;0;0;0;0;0;0.02;1;0.02;1;0.05;1;0;0;0.10;1;0.03;1
+mayconmesquita;8;3;0.59;2;0.08;1;0.52;3;0.71;4;0;0;0.09;1;0;0;0;0;0;0;0;0;0;0;0.04;1;0;0;0;0;0.11;1;0.12;1
+marcosc90;5;2;0.42;2;0.42;3;0.73;4;0.83;5;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.09;1;0;0
+aakashgarg19;0;1;0.00;1;0;0;0;0;0.79;4;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+zahlman;0;1;0.80;2;0;0;0.50;3;0.20;2;0;0;0.20;2;0;0;0;0;0;0;0;0;0;0;0.10;1;0;0;0;0;0.10;1;0;0
+drewnoakes;13;3;27.26;5;0.13;1;0.42;3;0.05;1;0.04;1;0.07;1;0.01;1;0;0;0;0;0;0;0.12;1;0.09;1;0.73;4;0.02;1;0.11;1;0.06;1
+piotr-skotnicki;0;1;1.25;3;0;0;0.33;2;0;0;0;0;0.33;2;0.25;2;0;0;0;0;0;0;0;0;0;0;0.50;3;0;0;0.17;1;0.25;2
+iamAzeem;0;1;0.06;1;0;0;0.44;3;0.06;1;0.14;1;0.12;1;0.18;1;0;0;0;0;0;0;0;0;0;0;0;0;0.43;3;0.20;2;0.54;3
+Mysticial;1;2;44.08;5;0;0;0.40;3;0;0;0;0;0.22;2;0.25;2;0;0;0;0;0;0;0;0;0.08;1;0;0;0.50;3;0.14;1;0.50;3
+bhristov96;0;1;0.00;1;0;0;0;0;0.07;1;0;0;0;0;0.11;1;0;0;0;0;0;0;0;0;0.33;2;0.04;1;0;0;0.67;4;0.07;1
+serpent5;17;3;1.63;3;0;0;0.18;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.91;5;0.55;3;0.88;5;0;0;0;0;0;0
+andrewhavens;2;2;3.01;4;0.19;1;0.58;3;0.31;2;0.06;1;0.14;1;0.05;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0.01;1;0.01;1

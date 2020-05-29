@@ -3,16 +3,18 @@ const apiStackoverflow = new ApiStackoverflow();
 
 async function start() {
   const usersidsSTack = [
-    4995,
-    17717,
-    5846,
-    77723,
-    68469,
-    14919,
-    39338,
-    1508,
-    124543,
-    161145
+    1709587,
+    4119452,
+    1119863,
+    10982972,
+    523612,
+    24874,
+    3953764,
+    7670262,
+    922184,
+    12488509,
+    2630078,
+    48523
   ];
   const languagesJob = [
     'JavaScript',

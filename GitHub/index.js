@@ -5,16 +5,19 @@ const apiGitHub = new ApiGitHub();
 
 async function start() {
   const usersNames = [
-    "wallacemaxters",
-    "isaiasdd",
-    "pablotdv",
-    "LeonardoBonetti",
-    "artptrapp",
-    "jlHertel",
-    "brumazzi",
-    "cegesser",
-    "darcamo",
-    "durvalcarvalho"
+    "ExplodingCabbage",
+    "mayconmesquita",
+    "marcosc90",
+    "aakashgarg19",
+    "zahlman",
+    "drewnoakes",
+    "piotr-skotnicki",
+    "iamAzeem",
+    "Mysticial",
+    "bhristov96",
+    "serpent5",
+    "andrewhavens",
+
   ];
   const languagesJob = [
     'JavaScript',
