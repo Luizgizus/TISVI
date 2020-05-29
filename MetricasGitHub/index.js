@@ -8,7 +8,7 @@ async function start() {
   const usersNames = await apiGitHub.getUserNamesAleatory();
   await apiGitHub.startFile();
   for (let i = 0; i < usersNames.length; i++) {
-    console.log(`getting ${i} user features`)
+    console.log(`getting ${i}-${usersNames[i]} user features`)
     await apiGitHub.getFeatures(usersNames[i]);
   }
 }

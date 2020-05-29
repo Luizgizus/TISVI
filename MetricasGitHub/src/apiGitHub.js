@@ -15,7 +15,6 @@ class ApiGitHub {
 
     this.defaultRepoData = {
       userName: null,
-      qtdReactionsOnIssues: 0,
       repoPopAVG: null,
       watchersAVG: null,
     };
@@ -74,8 +73,8 @@ class ApiGitHub {
   }
 
   async getFeatures(userName, languagesNames) {
-    const issuesData = await this.getFeaturesOfIssues();
-    const repositoiesData = await this.getFeaturesOfRepositories();
+    const issuesData = await this.getFeaturesOfIssues(userName);
+    const repositoiesData = await this.getFeaturesOfRepositories(userName);
 
     this.saveOnCsv(
       issuesData,
@@ -97,7 +96,7 @@ class ApiGitHub {
 
       let users = []
 
-      while (users.length <= 1000) {
+      while (users.length <= 2000) {
         const response = await this.request.post(url, body);
         body.query = this.model.getStringAleatoryUsers();
         if (response.statusCode === 200) {
@@ -137,9 +136,12 @@ class ApiGitHub {
 
       const response = await this.request.post(url, body);
 
-      if (response.statusCode === 200) {
+      if (response.statusCode === 200 &&
+        response.body.data &&
+        response.body.data.search &&
+        response.body.data.search.nodes) {
         const dataRepos = response.body.data.search.nodes.pop();
-        if (dataRepos) {
+        if (!_.isEmpty(dataRepos) && !_.isEmpty(dataRepos.issues)) {
           if (dataRepos.issues.totalCount > 100) {
             issuesData.totalCount = 100;
           } else {
@@ -179,7 +181,10 @@ class ApiGitHub {
 
       do {
         const response = await this.request.post(url, body);
-        if (response.statusCode === 200) {
+        if (response.statusCode === 200 &&
+          response.body.data &&
+          response.body.data.search &&
+          response.body.data.search.nodes) {
           const dataRepos = response.body.data.search.nodes.pop();
           if (dataRepos) {
             hasNext = dataRepos.followers.pageInfo.hasNextPage;
@@ -227,9 +232,12 @@ class ApiGitHub {
 
       const response = await this.request.post(url, body);
 
-      if (response.statusCode === 200) {
+      if (response.statusCode === 200 &&
+        response.body.data &&
+        response.body.data.search &&
+        response.body.data.search.nodes) {
         const dataRepos = response.body.data.search.nodes.pop();
-        if (dataRepos) {
+        if (!_.isEmpty(dataRepos) && !_.isEmpty(dataRepos.repositories)) {
           if (dataRepos.repositories.totalCount > 100) {
             respositoriesData.totalCount = 100;
           } else {
