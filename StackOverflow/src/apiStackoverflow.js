@@ -192,7 +192,7 @@ class ApiStackoverflow {
       scaledReputation: null,
     };
 
-    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
+    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=pt.stackoverflow`;
     const response = await this.request.get(url);
 
     const data = response.body.items.pop();
@@ -219,7 +219,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=pt.stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -234,7 +234,7 @@ class ApiStackoverflow {
             (data.items[i].score + defaultAnswerData.scoreAvg) / 2;
         }
 
-        const urlQuestion = `https://api.stackexchange.com/2.2/questions/${data.items[i].question_id}?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
+        const urlQuestion = `https://api.stackexchange.com/2.2/questions/${data.items[i].question_id}?key=U4DMV*8nvpm3EOpvf69Rxw((&site=pt.stackoverflow`;
         const responseQuestion = await this.request.get(urlQuestion);
 
         const question = responseQuestion.body.items.pop();
@@ -270,7 +270,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&key=U4DMV*8nvpm3EOpvf69Rxw((&site=pt.stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;

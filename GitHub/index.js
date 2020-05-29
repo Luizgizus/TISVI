@@ -5,19 +5,27 @@ const apiGitHub = new ApiGitHub();
 
 async function start() {
   const usersNames = [
-    "jwd-ali",
-    "ankitkanojia",
-    "polm",
-    "denistsoi",
-    "cagri90",
+    "wallacemaxters",
+    "isaiasdd",
+    "pablotdv",
+    "LeonardoBonetti",
+    "artptrapp",
+    "jlHertel",
+    "brumazzi",
+    "cegesser",
+    "darcamo",
+    "durvalcarvalho"
   ];
   const languagesJob = [
     'JavaScript',
     "C",
+    "php",
+    "C#",
     "C++"
   ]
   await apiGitHub.startFile(languagesJob);
   for (let i = 0; i < usersNames.length; i++) {
+    console.log("doind user: " + usersNames[i]);
     await apiGitHub.getFeatures(usersNames[i], languagesJob);
   }
 }

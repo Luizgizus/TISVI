@@ -2,11 +2,23 @@ const ApiStackoverflow = require("./src/apiStackoverflow");
 const apiStackoverflow = new ApiStackoverflow();
 
 async function start() {
-  // const usersidsSTack = [1780632, 5783700, 355715, 2312051, 2576254];
-  const usersidsSTack = [1780632];
+  const usersidsSTack = [
+    4995,
+    17717,
+    5846,
+    77723,
+    68469,
+    14919,
+    39338,
+    1508,
+    124543,
+    161145
+  ];
   const languagesJob = [
     'JavaScript',
     "C",
+    "php",
+    "C#",
     "C++"
   ]
 

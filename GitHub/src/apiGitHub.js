@@ -19,8 +19,6 @@ class ApiGitHub {
       scaledQtdReactionsOnIssues: null,
       repoPopAVG: null,
       scaledRepoPopAVG: null,
-      watchersAVG: null,
-      scaledWatchersAVG: null,
     };
   }
 
@@ -31,8 +29,6 @@ class ApiGitHub {
       scaledQtdReactionsOnIssues: null,
       repoPopAVG: null,
       scaledRepoPopAVG: null,
-      watchersAVG: null,
-      scaledWatchersAVG: null,
     }
 
     for (let i = 0; i < languagesJob.length; i++) {
@@ -76,6 +72,38 @@ class ApiGitHub {
     }
   }
 
+  getScaleOfReactionsOnIssues(qtdReaction) {
+    if (qtdReaction <= 0.2) {
+      return 1;
+    } else if (qtdReaction > 0.2 && qtdReaction < 5.15) {
+      return 2;
+    } else if (qtdReaction >= 5.15 && qtdReaction < 24.89) {
+      return 3;
+    } else if (qtdReaction >= 24.89 && qtdReaction < 82.15) {
+      return 4;
+    } else if (qtdReaction >= 82.15) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
+  getScaleOfPopularityInRepositories(Popularoty) {
+    if (Popularoty <= 0.06) {
+      return 1;
+    } else if (Popularoty > 0.06 && Popularoty < 1.2) {
+      return 2;
+    } else if (Popularoty >= 1.2 && Popularoty < 2.43) {
+      return 3;
+    } else if (Popularoty >= 2.43 && Popularoty < 5.68) {
+      return 4;
+    } else if (Popularoty >= 5.68) {
+      return 5;
+    } else {
+      return 0;
+    }
+  }
+
   saveOnCsv(
     issuesData,
     followersData,
@@ -86,7 +114,6 @@ class ApiGitHub {
     let qtdIssuesClosed = {};
     let qtdfollowerOfLanguage = {};
     let qtdReposOfLanguage = {};
-    let totalWatchers = 0;
     let totalPop = 0;
     const urlRepos = [];
 
@@ -115,6 +142,8 @@ class ApiGitHub {
         }
       }
     }
+
+    this.defaultRepoData.scaledQtdReactionsOnIssues = this.getScaleOfReactionsOnIssues(this.defaultRepoData.qtdReactionsOnIssues)
 
     for (let i = 0; i < followersData.folowers.length; i++) {
       const follower = followersData.folowers[i];
@@ -147,7 +176,6 @@ class ApiGitHub {
       }
 
       totalPop += repo.stargazers.totalCount;
-      totalWatchers += repo.watchers.totalCount;
     }
 
     for (let i = 0; i < jobsLanguages.length; i++) {
@@ -197,17 +225,13 @@ class ApiGitHub {
       );
     }
 
-    this.defaultRepoData.watchersAVG = (
-      totalWatchers / repositoriesData.totalCount
-    ).toFixed(2);
-
     this.defaultRepoData.repoPopAVG = (
       totalPop / repositoriesData.totalCount
     ).toFixed(2);
 
-    // console.log(urlRepos);
+    this.defaultRepoData.scaledRepoPopAVG = this.getScaleOfPopularityInRepositories(this.defaultRepoData.repoPopAVG)
 
-    console.log(this.defaultRepoData)
+    console.log(urlRepos)
 
     fs.appendFileSync(
       "github.csv",

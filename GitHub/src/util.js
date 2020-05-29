@@ -11,8 +11,6 @@ class Util {
       "Escala da quantidade de reações nas issues": null,
       "Popularidade do repositório": null,
       "Escala da popularidade do repositório": null,
-      "Média de watchers": null,
-      "Escala da média de watchers": null,
     };
 
     for (let i = 0; i < languagesJob.length; i++) {
