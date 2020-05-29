@@ -5,6 +5,8 @@ const fs = require("fs");
 const Request = require("./request");
 const Util = require("./util");
 
+const Promise = require('bluebird')
+
 class ApiStackoverflow {
   constructor() {
     this.request = new Request();
@@ -192,14 +194,12 @@ class ApiStackoverflow {
       scaledReputation: null,
     };
 
-    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=pt.stackoverflow`;
+    const url = `https://api.stackexchange.com/2.2/users/${idsUser}?&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
     const response = await this.request.get(url);
 
     const data = response.body.items.pop();
 
     defaultUserData.reputaion = data.reputation;
-
-    // do scaling reputation
 
     return defaultUserData;
   }
@@ -219,7 +219,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=pt.stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/answers?page=${page}&key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=100&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
@@ -234,10 +234,19 @@ class ApiStackoverflow {
             (data.items[i].score + defaultAnswerData.scoreAvg) / 2;
         }
 
-        const urlQuestion = `https://api.stackexchange.com/2.2/questions/${data.items[i].question_id}?key=U4DMV*8nvpm3EOpvf69Rxw((&site=pt.stackoverflow`;
-        const responseQuestion = await this.request.get(urlQuestion);
+        let question = []
+        let keepTring = true
 
-        const question = responseQuestion.body.items.pop();
+        while (keepTring) {
+          try {
+            question = await this.getQUestionOfAnswer(data.items[i].question_id)
+            keepTring = false
+          } catch (err) {
+            console.log(err)
+            console.log("Waiting 30000")
+            await Promise.delay(30000)
+          }
+        }
 
         for (let j = 0; j < question.tags.length; j++) {
           if (
@@ -255,6 +264,16 @@ class ApiStackoverflow {
     return defaultAnswerData;
   }
 
+  async getQUestionOfAnswer(question_id) {
+    const urlQuestion = `https://api.stackexchange.com/2.2/questions/${question_id}?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
+    console.log(`getting ${urlQuestion}`)
+    const responseQuestion = await this.request.get(urlQuestion);
+
+    const question = responseQuestion.body.items.pop();
+
+    return question
+  }
+
   async getQuestionsMetrics(idsUser) {
     const defaultQuestionsData = {
       idUser: idsUser,
@@ -270,7 +289,7 @@ class ApiStackoverflow {
 
     do {
       page++;
-      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&key=U4DMV*8nvpm3EOpvf69Rxw((&site=pt.stackoverflow`;
+      const url = `https://api.stackexchange.com/2.2/users/${idsUser}/questions?page=${page}&pagesize=100&key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow`;
       const response = await this.request.get(url);
 
       const data = response.body;
