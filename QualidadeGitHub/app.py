@@ -8,7 +8,7 @@ from contextlib import contextmanager
 import sys, os
 
 # FILE_NAME = None
-FILE_NAME = 'metrics.csv'
+FILE_NAME = 'metrics-1590775261.csv'
 
 @contextmanager
 def suppress_stdout():
@@ -37,17 +37,17 @@ def analyze(path, key):
     path = path.replace('.git', '')
 
     command = 'cd ' + path + '&& sonar-scanner.bat -D"sonar.projectKey=' + key + '" -D"sonar.sources=." ' \
-                 '-D"sonar.host.url=http://infra.brian.place:32769" -D"sonar.login=0088090c339eeb581d77af487c7c264accb9ff03"'
+                 '-D"sonar.host.url=http://infra2.brian.place:32768" -D"sonar.login=c89ac9884e778d34700810d7a90f7b2aa41a21df"'
     os.system(command)
 
 def createKey(name):
     data = {'name': name, 'project': name}
-    requests.post('http://infra.brian.place:32769/api/projects/create', data=data)
+    requests.post('http://infra2.brian.place:32768/api/projects/create', data=data)
 
 def getMeasures(component):
 
     metrics = 'ncloc,vulnerabilities,bugs,code_smells,reliability_rating,duplicated_lines,lines_to_cover,duplicated_blocks'
-    x = requests.get('http://infra.brian.place:32769/api/measures/component?component='+component+'&metricKeys='+metrics)
+    x = requests.get('http://infra2.brian.place:32768/api/measures/component?component='+component+'&metricKeys='+metrics)
     return x.json()
 
 def ordenar(array, row):
@@ -258,7 +258,7 @@ if __name__ == "__main__":
   'https://github.com/zahlman/indexify.git',
   'https://github.com/zahlman/json_bpatch.git',
   'https://github.com/zahlman/TiddlyWiki5.git',
-  https://github.com/aakashgarg19/Programs.git',
+  'https://github.com/aakashgarg19/Programs.git',
   'https://github.com/aakashgarg19/Codes.git',
   'https://github.com/aakashgarg19/gitShowCase.git',
   'https://github.com/aakashgarg19/TodoWeb.git',
@@ -332,6 +332,7 @@ if __name__ == "__main__":
             print(str(i) + '/' + str(len(repos)))
             with suppress_stdout():
                 run(repo)
-        except:
+        except Exception as e:
             print("ERRO! Repositório: " + repo)
+            print(str(e))
     
